@@ -11,6 +11,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
@@ -73,6 +76,32 @@ public class AuthorizationServiceTest {
         assertNull(response);
     }
 
+    @Test
+    public void testCheckAuthorizationUserObjectNotFound() {
+        response = auth.checkAuthorizationUsers(null, null);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
 
+    @Test
+    public void testCheckAuthorizationUserUserNotAuthorized() {
+        Object object = new Object();
+        Collection<User> users = new ArrayList<User>();
 
+        when(userComponent.getLoggedUser()).thenReturn(user);
+
+        response = auth.checkAuthorizationUsers(object, users);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+
+    @Test
+    public void testCheckAuthorizationUsersAuthorized() {
+        Object object = new Object();
+        Collection<User> users = new ArrayList<User>();
+
+        users.add(user);
+        when(userComponent.getLoggedUser()).thenReturn(user);
+
+        response = auth.checkAuthorizationUsers(object, users);
+        assertNull(response);
+    }
 }
