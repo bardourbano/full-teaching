@@ -9,3 +9,6 @@
 src/.project
 src/.classpath
 nbactions.xml
+.classpath
+.project
+.springBeans
