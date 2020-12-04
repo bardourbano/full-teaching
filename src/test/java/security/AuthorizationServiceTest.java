@@ -62,4 +62,17 @@ public class AuthorizationServiceTest {
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
 
+    @Test
+    public void testCheckAuthorizationUserAuthorized() {
+        Object object = new Object();
+
+        when(userComponent.getLoggedUser()).thenReturn(user);
+        when(user.getName()).thenReturn("Jose");
+
+        response = auth.checkAuthorization(object, user);
+        assertNull(response);
+    }
+
+
+
 }
