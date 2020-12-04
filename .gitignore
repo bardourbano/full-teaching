@@ -12,3 +12,5 @@ nbactions.xml
 .classpath
 .project
 .springBeans
+.idea
+.scannerwork

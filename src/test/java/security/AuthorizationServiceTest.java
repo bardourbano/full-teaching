@@ -1,6 +1,7 @@
 package security;
 
 import com.fullteaching.backend.security.AuthorizationService;
+import com.fullteaching.backend.user.User;
 import com.fullteaching.backend.user.UserComponent;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +19,9 @@ import static org.mockito.Mockito.when;
 public class AuthorizationServiceTest {
 
     @Mock
-    private UserComponent user ;
+    private UserComponent userComponent ;
+    @Mock
+    private User user;
 
     @InjectMocks
     private AuthorizationService auth;
@@ -27,7 +30,7 @@ public class AuthorizationServiceTest {
 
     @Test
     public void testUnauthorizedUser() {
-        when(user.isLoggedUser()).thenReturn(false);
+        when(userComponent.isLoggedUser()).thenReturn(false);
 
         response = auth.checkBackendLogged();
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
@@ -35,7 +38,7 @@ public class AuthorizationServiceTest {
 
     @Test
     public void testUserLogged() {
-        when(user.isLoggedUser()).thenReturn(true);
+        when(userComponent.isLoggedUser()).thenReturn(true);
 
         response = auth.checkBackendLogged();
         assertNull(response);
@@ -45,6 +48,18 @@ public class AuthorizationServiceTest {
     public void testCheckAuthorizationObjectNotFound() {
         response = auth.checkAuthorization(null, null);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void testCheckAuthorizationUserNotAuthorized() {
+        Object object = new Object();
+        User u = new User();
+
+        when(userComponent.getLoggedUser()).thenReturn(user);
+        when(user.getName()).thenReturn("pedro");
+
+        response = auth.checkAuthorization(object, u);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
 
 }
